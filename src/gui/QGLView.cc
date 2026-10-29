@@ -468,10 +468,8 @@ bool QGLView::event(QEvent *event)
     const auto *gesture = static_cast<QNativeGestureEvent *>(event);
     switch (gesture->gestureType()) {
     case Qt::BeginNativeGesture:
-    case Qt::EndNativeGesture:
-      event->accept();
-      return true;
-    case Qt::ZoomNativeGesture: {
+    case Qt::EndNativeGesture:   event->accept(); return true;
+    case Qt::ZoomNativeGesture:  {
       const auto magnification = gesture->value();
       if (std::isfinite(magnification) && magnification > -1.0 && magnification != 0.0) {
         // Native magnification is incremental: scale *= 1 + value.
@@ -493,8 +491,7 @@ bool QGLView::event(QEvent *event)
       event->accept();
       return true;
     }
-    default:
-      break;
+    default: break;
     }
   }
   return QOpenGLWidget::event(event);

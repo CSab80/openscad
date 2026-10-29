@@ -18,13 +18,13 @@ void sendGesture(QGLView *view, Qt::NativeGestureType type, double value, const 
   const QPointF windowPos = view->mapTo(view->window(), pos.toPoint());
 #if QT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
   QNativeGestureEvent event(type, QPointingDevice::primaryPointingDevice(), 2, windowPos, windowPos,
-                           view->mapToGlobal(pos.toPoint()), value, QPointF());
+                            view->mapToGlobal(pos.toPoint()), value, QPointF());
 #elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   QNativeGestureEvent event(type, QPointingDevice::primaryPointingDevice(), windowPos, windowPos,
-                           view->mapToGlobal(pos.toPoint()), value, 0, 0);
+                            view->mapToGlobal(pos.toPoint()), value, 0, 0);
 #else
-  QNativeGestureEvent event(type, nullptr, windowPos, windowPos, view->mapToGlobal(pos.toPoint()),
-                           value, 0, 0);
+  QNativeGestureEvent event(type, nullptr, windowPos, windowPos, view->mapToGlobal(pos.toPoint()), value,
+                            0, 0);
 #endif
   QApplication::sendEvent(view, &event);
 }
@@ -147,26 +147,25 @@ void TestQGLView::pinchAnchor()
   glGetIntegerv(GL_VIEWPORT, viewport);
   // Choose a point on the camera's target plane directly beneath the pointer.
   GLdouble centerX, centerY, depth;
-  QVERIFY(gluProject(0, 0, 0, view->modelview, view->projection, viewport,
-                     &centerX, &centerY, &depth) == GL_TRUE);
+  QVERIFY(gluProject(0, 0, 0, view->modelview, view->projection, viewport, &centerX, &centerY, &depth) ==
+          GL_TRUE);
   const QPoint pos(view->width() * relativePosition.x(), view->height() * relativePosition.y());
   const auto screenX = viewport[0] + (pos.x() + 0.5) * viewport[2] / view->width();
   const auto screenY = viewport[1] + viewport[3] - (pos.y() + 0.5) * viewport[3] / view->height();
   GLdouble worldX, worldY, worldZ;
-  QVERIFY(gluUnProject(screenX, screenY, depth, view->modelview, view->projection, viewport,
-                       &worldX, &worldY, &worldZ) == GL_TRUE);
+  QVERIFY(gluUnProject(screenX, screenY, depth, view->modelview, view->projection, viewport, &worldX,
+                       &worldY, &worldZ) == GL_TRUE);
 
   for (const auto magnification : {0.25, -0.2}) {
     sendGesture(view, Qt::ZoomNativeGesture, magnification, pos);
     view->setupCamera();
     GLdouble projectedX, projectedY, projectedZ;
-    QVERIFY(gluProject(worldX, worldY, worldZ, view->modelview, view->projection, viewport,
-                       &projectedX, &projectedY, &projectedZ) == GL_TRUE);
+    QVERIFY(gluProject(worldX, worldY, worldZ, view->modelview, view->projection, viewport, &projectedX,
+                       &projectedY, &projectedZ) == GL_TRUE);
     // Verify the rendered position, independently of the zoom translation formula.
     // Allow a hundredth of a pixel for the OpenGL matrices' floating-point precision.
-    const auto details = QString("Anchor drift in pixels: [%1, %2]")
-                           .arg(projectedX - screenX)
-                           .arg(projectedY - screenY);
+    const auto details =
+      QString("Anchor drift in pixels: [%1, %2]").arg(projectedX - screenX).arg(projectedY - screenY);
     QVERIFY2(std::abs(projectedX - screenX) < 0.01, qPrintable(details));
     QVERIFY2(std::abs(projectedY - screenY) < 0.01, qPrintable(details));
   }
