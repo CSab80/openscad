@@ -18,7 +18,7 @@ public:
   {
     setupUi(this);
     this->setWindowTitle(QString(_("About OpenSCAD")) + " " +
-                         QString::fromStdString(std::string(openscad_shortversionnumber)));
+                         QString::fromStdString(std::string(openscad_versionnumber)));
     QString tmp = this->aboutText->toHtml();
     tmp.replace("__VERSION__", QString::fromStdString(std::string(openscad_detailedversionnumber)));
     this->aboutText->setHtml(tmp);

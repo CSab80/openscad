@@ -1,3 +1,13 @@
+# OpenSCAD 2026.10.29-CS1
+
+Fork personnel de [openscad/openscad](https://github.com/openscad/openscad) avec
+zoom progressif au trackpad dans l’aperçu 3D, centré sur le pointeur selon le
+réglage de centrage de la souris.
+
+Voir les [modifications, vérifications et instructions de compilation de CS1](doc/CS1.md).
+
+---
+
 [![GitHub (master)](https://img.shields.io/github/checks-status/openscad/openscad/master.svg?logo=github&label=build&logoColor=black&colorA=f9d72c&style=plastic)](https://github.com/openscad/openscad/actions)
 [![CircleCI (master)](https://img.shields.io/circleci/project/github/openscad/openscad/master.svg?logo=circleci&logoColor=black&colorA=f9d72c&style=plastic)](https://circleci.com/gh/openscad/openscad/tree/master)
 [![Coverity Scan](https://img.shields.io/coverity/scan/2510.svg?colorA=f9d72c&logoColor=black&style=plastic)](https://scan.coverity.com/projects/2510)
