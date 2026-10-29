@@ -85,6 +85,7 @@ The following test suites are currently implemented:
 *   **TestTabManager**: Tests tab opening, closing, and management.
 *   **TestMainWindow**: Tests main window properties and behaviors.
 *   **TestModuleCache**: Tests the caching of modules and file reloading.
+*   **TestQGLView**: Tests native trackpad pinch zoom in perspective and orthogonal views, including cursor centering, window-to-view coordinate mapping, projected anchor stability, and small incremental movements.
 
 ### Test Parameters
 

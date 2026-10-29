@@ -1590,6 +1590,7 @@ if(ENABLE_GUI_TESTS)
     src/guitests/TestModuleCache.h
     src/guitests/TestTabManager.h
     src/guitests/TestMainWindow.h
+    src/guitests/TestQGLView.h
     src/guitests/UXTest.h
   )
 
@@ -1598,6 +1599,7 @@ if(ENABLE_GUI_TESTS)
     src/guitests/TestModuleCache.cc
     src/guitests/TestTabManager.cc
     src/guitests/TestMainWindow.cc
+    src/guitests/TestQGLView.cc
     src/guitests/UXTest.cc
   )
 

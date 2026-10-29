@@ -50,6 +50,7 @@
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QMouseEvent>
+#include <QNativeGestureEvent>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QTimer>
@@ -461,6 +462,44 @@ bool QGLView::save(const char *filename) const
   return this->frame.save(filename, "PNG");
 }
 
+bool QGLView::event(QEvent *event)
+{
+  if (event->type() == QEvent::NativeGesture) {
+    const auto *gesture = static_cast<QNativeGestureEvent *>(event);
+    switch (gesture->gestureType()) {
+    case Qt::BeginNativeGesture:
+    case Qt::EndNativeGesture:
+      event->accept();
+      return true;
+    case Qt::ZoomNativeGesture: {
+      const auto magnification = gesture->value();
+      if (std::isfinite(magnification) && magnification > -1.0 && magnification != 0.0) {
+        // Native magnification is incremental: scale *= 1 + value.
+        // Convert it to the exponential wheel units without rounding small movements.
+        const auto delta = 120.0 * std::log1p(magnification) / -std::log(0.9);
+        if (this->mouseCentricZoom) {
+          // Native gestures can retain window-relative local coordinates when Qt
+          // forwards them to a child widget. Map the screen position to this view.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          const auto pos = mapFromGlobal(gesture->globalPosition().toPoint());
+#else
+          const auto pos = mapFromGlobal(gesture->screenPos().toPoint());
+#endif
+          zoomCursor(pos.x(), pos.y(), delta);
+        } else {
+          zoom(delta, true);
+        }
+      }
+      event->accept();
+      return true;
+    }
+    default:
+      break;
+    }
+  }
+  return QOpenGLWidget::event(event);
+}
+
 void QGLView::wheelEvent(QWheelEvent *event)
 {
   const auto pos = Q_WHEEL_EVENT_POSITION(event);
@@ -498,7 +537,7 @@ void QGLView::zoomFov(double v)
   emit cameraChanged();
 }
 
-void QGLView::zoomCursor(int x, int y, int zoom)
+void QGLView::zoomCursor(int x, int y, double zoom)
 {
   const auto old_dist = cam.zoomValue();
   this->cam.zoom(zoom, true);
